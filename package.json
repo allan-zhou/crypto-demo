@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
-    "ed25519": "0.0.4"
+    "ed25519": "0.0.4",
+    "node-forge": "^0.7.1",
+    "ursa": "^0.9.4"
   }
 }
