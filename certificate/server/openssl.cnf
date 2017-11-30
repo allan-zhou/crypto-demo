@@ -11,7 +11,7 @@ localityName = Locality Name (eg, city)
 localityName_default = ChaoYang  
 organizationalUnitName  = Organizational Unit Name (eg, section)  
 organizationalUnitName_default  = 17shanyuan  
-commonName = server  
+commonName = my server  
 commonName_max  = 64  
 
 [ v3_req ]  

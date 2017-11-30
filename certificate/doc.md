@@ -47,10 +47,10 @@ openssl genrsa -out server/server-key.pem 2048
 
 openssl req -new -key server/server-key.pem -config server/openssl.cnf -out server/server-csr.pem
 
-openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server/server-cert.pem
-> subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=192.168.1.217/emailAddress=server@17shanyuan.com
+openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server-cert.pem -extensions v3_req -extfile openssl.cnf
+- -extensions——按照openssl.cnf文件中配置的v3_ca项添加扩展
 
-openssl pkcs12 -export -in server/server-cert.pem -inkey server/server-key.pem -certfile ca/ca-cert.pem -out server/server.p12
+openssl pkcs12 -export -in server/server-cert.pem -inkey server/server-key.pem -certfile ca/ca-cert.pem -out server/server.pfx
 
 ## 生成client证书
 openssl genrsa -out client/client-key.pem 2048
