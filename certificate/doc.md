@@ -33,28 +33,41 @@ openssl rsa -in ./wangwu/wangwu.key -pubout -out ./wangwu/wangwu.crt
 
 创建自签名或签名证书（包括 CA 证书）时，可指定**主题**。
 证书的主题是证书中编码的 X.500 专有名称的属性集合。该主题使证书的接收方能够查看关于证书所有者的信息。 主题描述了证书所有者，但不一定是唯一的。可将主题视为电话簿中的条目；
+
 ## 生成CA证书
-openssl genrsa -out ca/ca.key 1024
+openssl genrsa -out ca/ca-key.pem 2048
 
-openssl req -new -out ca/ca-req.csr -key ca/ca.key
+openssl req -new -key ca/ca-key.pem -out ca/ca-csr.pem 
 
-openssl x509 -req -in ca/ca-req.csr -out ca/ca.crt -signkey ca/ca.key -days 365
+openssl x509 -req -in ca/ca-csr.pem -signkey ca/ca-key.pem -out ca/ca-cert.pem
 > subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=root/emailAddress=root@17shanyuan.com
 
-## 生成zhangsan证书
-openssl req -new -out zhangsan/zhangsan.csr -key zhangsan/zhangsan.key
+## 生成server证书
+openssl genrsa -out server/server-key.pem 2048
 
-openssl x509 -req -in zhangsan/zhangsan.csr -out zhangsan/zhangsan-ca.crt -signkey zhangsan/zhangsan.key -CA ca/ca.crt -CAkey ca/ca.key -CAcreateserial -days 365
-> subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=zhangsan/emailAddress=zhangsan@17shanyuan.com
+openssl req -new -key server/server-key.pem -config server/openssl.cnf -out server/server-csr.pem
 
-## 生成lisi证书
-openssl req -new -out lisi/lisi.csr -key lisi/lisi.key
--subj "/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=lisi/emailAddress=lisi@17shanyuan.com"
+openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server/server-cert.pem
+> subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=192.168.1.217/emailAddress=server@17shanyuan.com
 
-openssl x509 -req -in lisi/lisi.csr -out lisi/lisi-ca.crt -signkey lisi/lisi.key -CA ca/ca.crt -CAkey ca/ca.key -CAcreateserial -days 365
+openssl pkcs12 -export -in server/server-cert.pem -inkey server/server-key.pem -certfile ca/ca-cert.pem -out server/server.p12
+
+## 生成client证书
+openssl genrsa -out client/client-key.pem 2048
+
+openssl req -new -key client/client-key.pem -out client/client-csr.pem
+
+openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in client/client-csr.pem -out client/client-cert.pem
+> subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan.com/OU=devp/CN=client/emailAddress=client@17shanyuan.com
 
 # 证书文件后缀名
 证书文件（.crt .cer）
 私钥文件（.key）
 证书请求文件（.csr）
 有时候，统一使用.pem后缀
+
+
+# 参考链接
+- [cnNode](http://cnodejs.org/topic/54745ac22804a0997d38b32d)
+- [IBM知识库-数字证书](https://www.ibm.com/support/knowledgecenter/zh/SSBLQQ_9.1.0/com.ibm.rational.test.lt.doc/topics/ccertcreate.html)
+- [http://blog.csdn.net/oldmtn/article/details/52208747](http://blog.csdn.net/oldmtn/article/details/52208747)
