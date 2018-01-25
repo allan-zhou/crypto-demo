@@ -1,12 +1,15 @@
-# 生成密钥对命令
-openssl genrsa -out ./zhangsan/zhangsan.key 1024 
-openssl rsa -in ./zhangsan/zhangsan.key -pubout -out ./zhangsan/zhangsan.crt
+# 证书
 
-openssl genrsa -out ./lisi/lisi.key 1024 
-openssl rsa -in ./lisi/lisi.key -pubout -out ./lisi/lisi.crt
+## OpenSSL生成公钥私钥
 
-openssl genrsa -out ./wangwu/wangwu.key 1024 
-openssl rsa -in ./wangwu/wangwu.key -pubout -out ./wangwu/wangwu.crt
+```shell
+# 生成 RSA 私钥
+openssl genrsa -out ./zhangsan/zhangsan_key.pem 1024
+
+# 生成 RSA 公钥
+openssl rsa -in ./zhangsan/zhangsan_key.pem -pubout -out ./zhangsan/zhangsan_cert.pem
+```
+
 
 # 生成数字证书
 [IBM知识库-数字证书](https://www.ibm.com/support/knowledgecenter/zh/SSBLQQ_9.1.0/com.ibm.rational.test.lt.doc/topics/ccertcreate.html)
@@ -47,7 +50,7 @@ openssl genrsa -out server/server-key.pem 2048
 
 openssl req -new -key server/server-key.pem -config server/openssl.cnf -out server/server-csr.pem
 
-openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server-cert.pem -extensions v3_req -extfile openssl.cnf
+openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server-cert.pem -extensions v3_req -extfile server/openssl.cnf
 - -extensions——按照openssl.cnf文件中配置的v3_ca项添加扩展
 
 openssl pkcs12 -export -in server/server-cert.pem -inkey server/server-key.pem -certfile ca/ca-cert.pem -out server/server.pfx
