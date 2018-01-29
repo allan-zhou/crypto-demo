@@ -4,10 +4,12 @@
 
 ```shell
 # 生成 RSA 私钥
-openssl genrsa -out ./zhangsan/zhangsan_key.pem 1024
+openssl genrsa -out ./zhangsan/zhangsan_key.pem 2048
 
 # 生成 RSA 公钥
 openssl rsa -in ./zhangsan/zhangsan_key.pem -pubout -out ./zhangsan/zhangsan_cert.pem
+
+openssl req -new -x509 -key ./zhangsan/zhangsan_key.pem -out ./zhangsan/zhangsan_cert.pem
 ```
 
 
