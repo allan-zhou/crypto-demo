@@ -1,59 +1,37 @@
 const path = require("path");
 const RSACryptoLib = require("./RSACryptoLib")
-const SignedData = require("./SignedData");
+const { SignedData } = require("./Entities");
 
 function CryptoLib(enrollmentID) {
     this.cryptolib = getRSACryptoLib(enrollmentID);
 }
 
-function splitToArray(inputString,len) {
-    var arr = [];
-    var number = Math.ceil(inputString.length / 100);
-    // console.log(number);
-    for (let i = 0; i < number; i++) {
-        // console.log(inputString.substr(len*i, len));
-        arr.push(inputString.substr(len*i, len))
-    }
-    return arr;
-}
-
-CryptoLib.prototype.SignAndEncrypt = function (rawDataStr) {
+CryptoLib.prototype.SignAndEncrypt = function (rawData) {
     // sign
-    var signatrue = this.cryptolib.Sign(rawDataStr);  
+    var signatrue = this.cryptolib.Sign(rawData);  
 
     // create signedData
     var signedData = new SignedData();
-    signedData.data = new Buffer(rawDataStr).toString("base64");
-    signedData.signature = signatrue;
-
-    console.log(signedData);
+    signedData.data = new Buffer(rawData).toString("base64");
+    signedData.signature = signatrue;    
     
     // encrypt
-    // console.log(JSON.stringify(signedData));
-    // console.log(JSON.stringify(signedData).length);
-    var toEncryptedData = JSON.stringify(signedData);
-    console.log(toEncryptedData.length);
-
-
-    var encryptedData = this.cryptolib.Encrypt(toEncryptedData.substr(0,256-42));    
-    return encryptedData;
+    return this.cryptolib.Encrypt(JSON.stringify(signedData));        
 }
 
-CryptoLib.prototype.DecryptAndVerify = function (rawDataStr) {
+CryptoLib.prototype.DecryptAndVerify = function (rawData) {
     // decrypt
-    var decryptedData = this.cryptolib.Decrypt(rawDataStr);
-    // console.log(decryptedData);
+    var decryptedData = this.cryptolib.Decrypt(rawData);    
 
     // create signedData
     var signedData = JSON.parse(decryptedData)
-    console.log(signedData);
+
+    // base64 decode data
+    var decodedRawData = Buffer.from(signedData.data, "base64").toString("utf8");
 
     // verify
-    var rawData = new Buffer(signedData.data, "base64");
-    var rawSignature = new Buffer(signedData.signatrue, "base64");
-
-    if (this.cryptolib.Verify(rawData, rawSignature)) {
-        return rawData;
+    if (this.cryptolib.Verify(decodedRawData, signedData.signature)) {
+        return decodedRawData;
     }
 
     return null;

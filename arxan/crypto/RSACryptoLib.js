@@ -1,23 +1,44 @@
 const crypto = require("crypto");
 const fs = require("fs");
+const common = require("./Common");
+
+const RSA_KEY_SIZE = 2048;
+const ENCRYPT_BLOCK_LENGTH = RSA_KEY_SIZE / 8 - 42;
+const DECRYPT_BLOCK_LENGTH = RSA_KEY_SIZE / 8 ;
 
 function RSACryptoLib(privateKey, platformCert, hashAlgorithm) {
-    this.privateKey = loadPemKey(privateKey);
-    this.platformCert = loadPemKey(platformCert);
+    this.privateKey = common.loadPemKey(privateKey);
+    this.platformCert = common.loadPemKey(platformCert);
     this.hashAlgorithm = hashAlgorithm || "sha256";
     this.signatureFormat = "base64";    
 }
 
 RSACryptoLib.prototype.Encrypt = function (rawData) {
-    var buffer = new Buffer(rawData,"utf8");
-    var encrypted =  crypto.publicEncrypt({ key: this.platformCert, padding: crypto.RSA_NO_PADDING }, buffer);
-    return encrypted.toString("base64");
+    var rawDataBuffer = Buffer.from(rawData,"utf8");    
+    var encryptBlockCount = Math.ceil(rawDataBuffer.length / ENCRYPT_BLOCK_LENGTH);
+
+    var arrayBuffer = [];
+    for (let i = 0; i < encryptBlockCount; i++) {
+        var blockBuffer = rawDataBuffer.slice(ENCRYPT_BLOCK_LENGTH * i, ENCRYPT_BLOCK_LENGTH * (i+1))
+        var encryptedBuffer =  crypto.publicEncrypt({ key: this.platformCert, padding: crypto.RSA_PKCS1_OAEP_PADDING }, blockBuffer);
+        arrayBuffer.push(encryptedBuffer);
+    }
+    
+    return Buffer.concat(arrayBuffer).toString("base64");
 }
 
 RSACryptoLib.prototype.Decrypt = function (rawData) {
-    var buffer = new Buffer(rawData, "base64");
-    var decrypted = crypto.privateDecrypt({ key: this.privateKey, padding: crypto.RSA_NO_PADDING }, buffer);
-    return decrypted.toString("utf8");
+    var rawDataBuffer = new Buffer(rawData, "base64");
+    var decryptBlockCount = rawDataBuffer.length / DECRYPT_BLOCK_LENGTH;
+    
+    var arrayBuffer = [];
+    for (let i = 0; i < decryptBlockCount; i++) {
+        var blockBuffer = rawDataBuffer.slice(DECRYPT_BLOCK_LENGTH * i, DECRYPT_BLOCK_LENGTH * (i+1))
+        var decryptedBuffer = crypto.privateDecrypt({ key: this.privateKey, padding: crypto.RSA_PKCS1_OAEP_PADDING }, blockBuffer);
+        arrayBuffer.push(decryptedBuffer);
+    }
+
+    return Buffer.concat(arrayBuffer).toString("utf8");
 }
 
 RSACryptoLib.prototype.Sign = function (rawData) {
@@ -30,11 +51,6 @@ RSACryptoLib.prototype.Verify = function (rawData, signature) {
     var verifier = crypto.createVerify(this.hashAlgorithm);
     verifier.update(rawData);
     return verifier.verify(this.platformCert, signature, this.signatureFormat)
-}
-
-function loadPemKey(filepath) {
-    var pem = fs.readFileSync(filepath);
-    return pem.toString();
 }
 
 module.exports = RSACryptoLib;

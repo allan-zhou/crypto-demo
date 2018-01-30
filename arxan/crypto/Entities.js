@@ -3,4 +3,4 @@ function SignedData() {
     this.signature = "";
 }
 
-module.exports = SignedData;
+module.exports = {SignedData};
