@@ -41,3 +41,4 @@ PKCS#7：定义一种通用的消息语法，包括数字签名和加密等用�
 ## reference
 
 - [PKCS](https://baike.baidu.com/item/PKCS/1042350)
+- [RSA_PKCS1_PADDING](https://www.douban.com/note/338531480/)
