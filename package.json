@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "asn1.js": "^5.0.0",
     "bcrypt": "^1.0.3",
+    "ec-key": "0.0.2",
     "ed25519": "0.0.4",
     "express": "^4.16.2",
     "node-forge": "^0.7.1",

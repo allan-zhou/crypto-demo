@@ -5,12 +5,6 @@
 
 - 与RSA相比，密钥可以更短，但强度更高。RSA是利用了大数质数分解难题。
 
-## 术语
-
-- ECC: 椭圆曲线密码学（Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。
-- ECDH: 椭圆曲线密钥交换算法（Elliptic Curve Diffie–Hellman key Exchange，缩写为ECDH），椭圆曲线迪菲-赫尔曼秘钥交换
-- ECDSA: 椭圆曲线数字签名算法（Elliptic Curve Digital Signature Algorithm，缩写为ECDSA）
-
 ## DH（Diffie-Hellman）
 
 共享密钥就会有密钥配送问题，Diffie-Hellman是解决这一问题的重要算法。
@@ -55,13 +49,33 @@ openssl ec -in ec-priv.pem -pubout -out ec-pub.pem
 openssl ec -in ec-pub.pem -pubin -text -noout
 ```
 
+## bitcoin elliptic curve keys
+
+- private key: 32 bytes
+- public key: 64 bytes(uncompressed form) or 32 bytes(compressed form), 1 byte prefix
+- elliptic curve: [secp256k1](https://en.bitcoin.it/wiki/Secp256k1)
+- [modular arithmetic](https://en.wikipedia.org/wiki/Modular_arithmetic): the EC crypto is based on
+
+## 术语
+
+- PKCS: 公钥密码学标准（Public Key Cryptography Standards, 缩写为 PKCS）
+- ECC: 椭圆曲线密码学（Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。
+- ECDH: 椭圆曲线密钥交换算法（Elliptic Curve Diffie–Hellman key Exchange，缩写为ECDH），椭圆曲线迪菲-赫尔曼秘钥交换
+- ECDSA: 椭圆曲线数字签名算法（Elliptic Curve Digital Signature Algorithm，缩写为ECDSA）
+- ASN.1: 抽象语法标记（Abstract Syntax Notation.One， 缩写为 ASN.1)，是一个接口描述语言定义的数据结构,可以用标准的、跨平台的方式被序列化和反序列化,。它广泛应用于电信和计算机网络,特别是在密码学。
+- X.509: 在密码学中,X.509是一个标准,定义了公钥证书的格式。X.509由ITU-T（国际电信联盟的标准化部门）定义，基于另一个ITU-T标准ASN.1。
+
 ## reference
 
-- [群论](https://baike.baidu.com/item/%E7%BE%A4%E8%AE%BA)
+- [elliptic curve keys](http://davidederosa.com/basic-blockchain-programming/elliptic-curve-keys/)
+- [wiki ASN.1](https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One)
+- [wiki ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)
+- [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1)
+- [sec2 v2](http://www.secg.org/sec2-v2.pdf)
+- [IES (Integrated Encryption Scheme)](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme)
+- [rfc5915](https://tools.ietf.org/html/rfc5915)
+- [asn1 oids](http://www.umich.edu/~x509/ssleay/asn1-oids.html)
 - http://www.heguangnan.com/post/understanding_ecc/
 - https://www.jianshu.com/p/2e6031ac3d50
 - http://blog.csdn.net/sqzhao/article/details/49124169
 - https://www.chinassl.net/ecc/n641.html
-- http://davidederosa.com/basic-blockchain-programming/elliptic-curve-keys/
-- [wiki ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)
-- [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1)
