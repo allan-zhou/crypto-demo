@@ -42,7 +42,7 @@ openssl req -new -x509 -key ./zhangsan/zhangsan_key.pem -out ./zhangsan/zhangsan
 ## 生成CA证书
 openssl genrsa -out ca/ca-key.pem 2048
 
-openssl req -new -key ca/ca-key.pem -out ca/ca-csr.pem 
+openssl req -new -key ca/ca-key.pem -out ca/ca-csr.pem
 
 openssl x509 -req -in ca/ca-csr.pem -signkey ca/ca-key.pem -out ca/ca-cert.pem
 > subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=root/emailAddress=root@17shanyuan.com

@@ -49,6 +49,24 @@ openssl ec -in ec-priv.pem -pubout -out ec-pub.pem
 openssl ec -in ec-pub.pem -pubin -text -noout
 ```
 
+## openssl 生成ECC证书
+
+```bash
+# Generating an ECDSA Key
+openssl ecparam -name prime256v1 -genkey -out ca.key
+# Self-Signed Certificate
+openssl req -new -x509 -key ca.key -out ca.crt -days 3600
+
+# create server key and use ca's certificate sign server's certificate
+openssl ecparam -name prime256v1 -genkey -out server.key
+openssl req -new -sha256 -key server.key -out server.csr
+openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -out server.crt -extensions v3_req -extfile openssl.cnf
+
+openssl ecparam -name prime256v1 -genkey -out client.key
+openssl req -new -sha256 -key client.key -out client.csr
+openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -out client.crt -extensions v3_req -extfile openssl.cnf
+```
+
 ## bitcoin elliptic curve keys
 
 - private key: 32 bytes
@@ -67,15 +85,20 @@ openssl ec -in ec-pub.pem -pubin -text -noout
 
 ## reference
 
+- [wiki.openssl.org ECC](https://wiki.openssl.org/index.php/Elliptic_Curve_Cryptography)
 - [elliptic curve keys](http://davidederosa.com/basic-blockchain-programming/elliptic-curve-keys/)
 - [wiki ASN.1](https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One)
 - [wiki ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)
 - [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1)
 - [sec2 v2](http://www.secg.org/sec2-v2.pdf)
 - [IES (Integrated Encryption Scheme)](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme)
-- [rfc5915](https://tools.ietf.org/html/rfc5915)
-- [asn1 oids](http://www.umich.edu/~x509/ssleay/asn1-oids.html)
+- [Elliptic Curve Private Key Structure (rfc5915)](https://tools.ietf.org/html/rfc5915)
+- [X.509 Public Key Infrastructure Certificate(rfc5280)](https://tools.ietf.org/html/rfc5280)
+- [Elliptic Curve Cryptography Subject Public Key Information(rfc5480)](https://tools.ietf.org/html/rfc5480)
+- [creating ssl certificates](https://zonena.me/2016/02/creating-ssl-certificates-in-3-easy-steps/)
+- [x690 DER](https://en.wikipedia.org/wiki/X.690#DER_encoding)
 - http://www.heguangnan.com/post/understanding_ecc/
 - https://www.jianshu.com/p/2e6031ac3d50
 - http://blog.csdn.net/sqzhao/article/details/49124169
 - https://www.chinassl.net/ecc/n641.html
+- https://zonena.me/2016/02/creating-ssl-certificates-in-3-easy-steps/
