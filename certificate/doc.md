@@ -12,8 +12,8 @@ openssl rsa -in ./zhangsan/zhangsan_key.pem -pubout -out ./zhangsan/zhangsan_cer
 openssl req -new -x509 -key ./zhangsan/zhangsan_key.pem -out ./zhangsan/zhangsan_cert.pem
 ```
 
+## 生成数字证书
 
-# 生成数字证书
 [IBM知识库-数字证书](https://www.ibm.com/support/knowledgecenter/zh/SSBLQQ_9.1.0/com.ibm.rational.test.lt.doc/topics/ccertcreate.html)
 
 在密码术中，公用密钥证书是使用数字签名将公用密钥与物理身份绑定在一起的文档。 这些证书通常称为**数字证书**或**客户机数字证书**。数字证书最常用的标准为 X.509 标准。
@@ -40,24 +40,31 @@ openssl req -new -x509 -key ./zhangsan/zhangsan_key.pem -out ./zhangsan/zhangsan
 证书的主题是证书中编码的 X.500 专有名称的属性集合。该主题使证书的接收方能够查看关于证书所有者的信息。 主题描述了证书所有者，但不一定是唯一的。可将主题视为电话簿中的条目；
 
 ## 生成CA证书
+
+```bash
 openssl genrsa -out ca/ca-key.pem 2048
 
 openssl req -new -key ca/ca-key.pem -out ca/ca-csr.pem
 
 openssl x509 -req -in ca/ca-csr.pem -signkey ca/ca-key.pem -out ca/ca-cert.pem
-> subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=root/emailAddress=root@17shanyuan.com
+# > subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan/OU=devp/CN=root/emailAddress=root@17shanyuan.com
+```bash
 
 ## 生成server证书
+
+```bash
 openssl genrsa -out server/server-key.pem 2048
 
 openssl req -new -key server/server-key.pem -config server/openssl.cnf -out server/server-csr.pem
 
 openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in server/server-csr.pem -out server-cert.pem -extensions v3_req -extfile server/openssl.cnf
-- -extensions——按照openssl.cnf文件中配置的v3_ca项添加扩展
+# -extensions——按照openssl.cnf文件中配置的v3_ca项添加扩展
 
 openssl pkcs12 -export -in server/server-cert.pem -inkey server/server-key.pem -certfile ca/ca-cert.pem -out server/server.pfx
+```
 
 ## 生成client证书
+
 openssl genrsa -out client/client-key.pem 2048
 
 openssl req -new -key client/client-key.pem -out client/client-csr.pem
@@ -65,14 +72,15 @@ openssl req -new -key client/client-key.pem -out client/client-csr.pem
 openssl x509 -req -CA ca/ca-cert.pem -CAkey ca/ca-key.pem -CAcreateserial -in client/client-csr.pem -out client/client-cert.pem
 > subject=/C=cn/ST=beijing/L=beijing/O=17shanyuan.com/OU=devp/CN=client/emailAddress=client@17shanyuan.com
 
-# 证书文件后缀名
+## 证书文件后缀名
+
 证书文件（.crt .cer）
 私钥文件（.key）
 证书请求文件（.csr）
 有时候，统一使用.pem后缀
 
+## 参考链接
 
-# 参考链接
 - [cnNode](http://cnodejs.org/topic/54745ac22804a0997d38b32d)
 - [IBM知识库-数字证书](https://www.ibm.com/support/knowledgecenter/zh/SSBLQQ_9.1.0/com.ibm.rational.test.lt.doc/topics/ccertcreate.html)
 - [http://blog.csdn.net/oldmtn/article/details/52208747](http://blog.csdn.net/oldmtn/article/details/52208747)

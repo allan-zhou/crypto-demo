@@ -3,7 +3,24 @@
 椭圆曲线密码学:Elliptic Curve Cryptography，是利用椭圆曲线来实现的密码技术，与RSA相比，密钥可以更短，但强度更高。  
 特别blockchain技术中，加密是重要的一环，比特币中便是使用了椭圆曲线密码技术，以太坊中也是使用的椭圆曲线DSA， 更为一般的HTTPS中使用的TLS也是基于椭圆曲线实现的密码交换。
 
-- 与RSA相比，密钥可以更短，但强度更高。RSA是利用了大数质数分解难题。
+## 加密算法
+
+在椭圆曲线加密（ECC）中，利用了某种特殊形式的椭圆曲线，即定义在有限域上的椭圆曲线。其方程如下：
+y²=x³+ax+b(mod p)
+
+这里p是素数，a和b为两个小于p的非负整数，它们满足：  
+4a³+27b²(mod p)≠0 其中，x,y,a,b ∈F(p)，则满足式（2）的点（x,y）和一个无穷点O就组成了椭圆曲线E。  
+
+椭圆曲线离散对数问题ECDLP定义如下：给定素数p和椭圆曲线E，对 Q=kP,在已知P,Q的情况下求出小于p的正整数k。可以证明，已知k和P计算Q比较容易，而由Q和P计算k则比较困难，至今没有有效的方法来解决这个问题，这就是椭圆曲线加密算法原理之所在。
+
+## 优点
+
+公钥密码体制根据其所依据的难题一般分为三类：大整数分解问题类、离散对数问题类、椭圆曲线类。有时也把椭圆曲线类归为离散对数类。
+
+- 安全性能更高 如160位ECC与1024位RSA、DSA有相同的安全强度。
+- 计算量小，处理速度快 在私钥的处理速度上（解密和签名），ECC远 比RSA、DSA快得多。
+- 存储空间占用小 ECC的密钥尺寸和系统参数与RSA、DSA相比要小得多， 所以占用的存储空间小得多。
+- 带宽要求低使得ECC具有广泛的应用前景。
 
 ## DH（Diffie-Hellman）
 
@@ -85,6 +102,7 @@ openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -out c
 
 ## reference
 
+- [wiki ECC](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography)
 - [wiki.openssl.org ECC](https://wiki.openssl.org/index.php/Elliptic_Curve_Cryptography)
 - [elliptic curve keys](http://davidederosa.com/basic-blockchain-programming/elliptic-curve-keys/)
 - [wiki ASN.1](https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One)
@@ -95,10 +113,12 @@ openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in server.csr -out c
 - [Elliptic Curve Private Key Structure (rfc5915)](https://tools.ietf.org/html/rfc5915)
 - [X.509 Public Key Infrastructure Certificate(rfc5280)](https://tools.ietf.org/html/rfc5280)
 - [Elliptic Curve Cryptography Subject Public Key Information(rfc5480)](https://tools.ietf.org/html/rfc5480)
+- [Use of ECC Algorithms in Cryptographic Message Syntax (CMS)](https://tools.ietf.org/html/rfc5753)
 - [creating ssl certificates](https://zonena.me/2016/02/creating-ssl-certificates-in-3-easy-steps/)
 - [x690 DER](https://en.wikipedia.org/wiki/X.690#DER_encoding)
+- [Algorithms and Identifiers for the X.509](https://tools.ietf.org/html/rfc3279)
+- [有限域 galois field](https://baike.baidu.com/item/%E6%9C%89%E9%99%90%E5%9F%9F)
+- [离散对数](https://baike.baidu.com/item/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0)
 - http://www.heguangnan.com/post/understanding_ecc/
 - https://www.jianshu.com/p/2e6031ac3d50
-- http://blog.csdn.net/sqzhao/article/details/49124169
 - https://www.chinassl.net/ecc/n641.html
-- https://zonena.me/2016/02/creating-ssl-certificates-in-3-easy-steps/
